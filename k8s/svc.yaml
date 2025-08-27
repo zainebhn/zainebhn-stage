@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: hello-app
+  name: stage
 spec:
   selector:
-    app: hello-app
+    app: stage
   ports:
   - port: 80
     targetPort: 80
