@@ -9,7 +9,6 @@
     "@testing-library/user-event": "^12.1.10",
     "antd": "^4.15.2",
     "antd-mobile": "^5.41.0-alpha.3",
-    "cypress": "^15.1.0",
     "env-cmd": "^10.1.0",
     "lodash.throttle": "^4.1.1",
     "re2": "^1.22.1",
@@ -47,5 +46,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "cypress": "^15.1.0"
   }
 }
