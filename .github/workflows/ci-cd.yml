@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      # PostgreSQL
       postgres:
         image: postgres:15
         env:
@@ -26,7 +25,6 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-      # RabbitMQ
       rabbitmq:
         image: rabbitmq:3-management
         ports:
@@ -38,7 +36,6 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-      # Vault
       vault:
         image: hashicorp/vault:1.13.3
         ports:
@@ -46,7 +43,6 @@ jobs:
         options: >-
           --cap-add=IPC_LOCK
 
-      # Keycloak
       keycloak:
         image: quay.io/keycloak/keycloak:23.0
         ports:
@@ -61,7 +57,6 @@ jobs:
           --health-retries 10
         command: ["start-dev"]
 
-      # SonarQube
       sonarqube:
         image: sonarqube:community
         ports:
@@ -97,19 +92,17 @@ jobs:
           npm -v
 
       - name: Install build tools
-        run: sudo apt-get update && sudo apt-get install -y build-essential python3
+        run: sudo apt-get update && sudo apt-get install -y build-essential python3 python3-pip
 
       - name: Install frontend dependencies
         run: |
           cd frontend
-          npm install -g npm@latest
-          npm install re2
           npm ci
+          npm install --save re2
           npm run build
 
       - name: Run tests
-        run: |
-          pytest --maxfail=1 --disable-warnings -q
+        run: pytest --maxfail=1 --disable-warnings -q
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v2.0
@@ -122,4 +115,5 @@ jobs:
       - name: Deploy with ArgoCD
         run: |
           echo "Déploiement déclenché via ArgoCD"
-          # Ici tu peux ajouter kubectl ou argocd CLI selon ton cluster
+          # Ajouter ici kubectl ou argocd CLI selon votre cluster
+
