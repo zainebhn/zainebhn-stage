@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      # PostgreSQL
       postgres:
         image: postgres:15
         env:
@@ -26,7 +25,6 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-      # RabbitMQ
       rabbitmq:
         image: rabbitmq:3-management
         ports:
@@ -38,7 +36,6 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-      # Vault
       vault:
         image: hashicorp/vault:1.13.3
         ports:
@@ -46,7 +43,6 @@ jobs:
         options: >-
           --cap-add=IPC_LOCK
 
-      # Keycloak
       keycloak:
         image: quay.io/keycloak/keycloak:23.0
         ports:
@@ -60,7 +56,6 @@ jobs:
           --health-timeout 5s
           --health-retries 10
 
-      # SonarQube
       sonarqube:
         image: sonarqube:community
         ports:
@@ -71,18 +66,7 @@ jobs:
           --health-timeout 5s
           --health-retries 10
 
-      # ArgoCD
-      #argocd:
-       # image: argoproj/argocd
-        #ports:
-         # - 8080:443
-        #options: >-
-         # --health-cmd "curl -k -f https://localhost:443/ || exit 1"
-          #--health-interval 10s
-          #--health-timeout 5s
-          #--health-retries 10
-
-      steps:
+    steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -94,7 +78,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r backend/requirements.txt
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -107,8 +91,9 @@ jobs:
           npm ci
           npm run build
 
-      - name: Run tests
+      - name: Run Python tests
         run: |
+          cd backend
           pytest --maxfail=1 --disable-warnings -q
 
       - name: SonarQube Scan
@@ -122,8 +107,4 @@ jobs:
       - name: Deploy with ArgoCD
         run: |
           echo "Déploiement déclenché via ArgoCD"
-
-        run: |
-          echo "Déploiement déclenché via ArgoCD"
-          # Ici tu peux ajouter kubectl ou argocd CLI selon ton cluster
-
+          # Ajouter ici kubectl ou argocd CLI selon ton cluster
